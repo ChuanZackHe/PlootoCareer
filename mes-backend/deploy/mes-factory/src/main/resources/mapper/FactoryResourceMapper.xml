@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.aiit.mes.factory.domain.dao.mapper.IFactoryResourceMapper">
+    <delete id="adminDeleteDeleted" parameterType="map">
+        delete
+        from fac_resource_info m
+        <where>
+            m.status = #{deletedStatus}
+            <if test="dateBefore != null and dateBefore != ''">
+                and create_time &lt; #{dateBefore}
+            </if>
+        </where>
+    </delete>
+
+    <select id="adminGetToDelete" parameterType="map"
+            resultType="org.aiit.mes.factory.domain.dao.entity.FactoryResourceInfo">
+        select * from fac_resource_info m
+        <where>
+            m.is_deleted = '1970-01-01 00:00:00'
+            <if test="dateBefore != null and dateBefore != ''">
+                and create_time &lt; #{dateBefore}
+            </if>
+        </where>
+    </select>
+
+    <select id="getChildResourceListMap" parameterType="java.lang.String"
+            resultType="map">
+        select * from fac_resource_info res
+        <where>
+            res.is_deleted = '1970-01-01 00:00:00'
+            <if test="parentCode != null and parentCode != ''">
+                and res.parent_code = #{parentCode}
+            </if>
+            <if test="tenantId != null and tenantId != ''">
+                and res.tenant_id = #{tenantId}
+            </if>
+        </where>
+    </select>
+    <select id="getRelationListMap" parameterType="java.lang.String"
+            resultType="map">
+        select * from fac_resource_relation relation
+        <where>
+            <if test="tenantId != null and tenantId != ''">
+                and relation.tenantId = #{tenantId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertResourcesBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into fac_resource_info
+        (state, capability,`DESC`, tenant_id,
+        create_time,create_username, update_time, update_username,
+        y_rel, x_rel, ancestor_code, parent_code,name, type, code)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.state},#{item.capability},#{item.desc},#{item.tenantId},
+            now(),#{item.createUsername},now(),#{item.updateUsername},
+            #{item.yRel},#{item.xRel},#{item.ancestorCode},
+            #{item.parentCode},#{item.name},#{item.type},#{item.code})
+        </foreach>
+    </insert>
+
+    <update id="updateResourcesBatch" parameterType="java.util.List">
+        update fac_resource_info
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="state =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when code=#{item.code} then #{item.state}
+                </foreach>
+            </trim>
+            <trim prefix="capability =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.capability !=null and item.capability != ''">
+                        when code=#{item.code} then #{item.capability}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="`desc` =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.desc !=null and item.desc != ''">
+                        when code=#{item.code} then #{item.desc}
+                    </if>
+                </foreach>
+            </trim>
+            update_time = now(),
+            <trim prefix="update_username =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.updateUsername !=null and item.updateUsername != ''">
+                        when code=#{item.code} then #{item.updateUsername}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="y_rel =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.yRel !=null and item.yRel != ''">
+                        when code=#{item.code} then #{item.yRel}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="x_rel =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.xRel !=null and item.xRel != ''">
+                        when code=#{item.code} then #{item.xRel}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ancestor_code =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.ancestorCode !=null and item.ancestorCode != ''">
+                        when code=#{item.code} then #{item.ancestorCode}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="parent_code =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.parentCode !=null and item.parentCode != ''">
+                        when code=#{item.code} then #{item.parentCode}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="name =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.name !=null and item.name != ''">
+                        when code=#{item.code} then #{item.name}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="type =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.type !=null and item.type != ''">
+                        when code=#{item.code} then #{item.type}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="code =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.code !=null and item.code != ''">
+                        when code=#{item.code} then #{item.code}
+                    </if>
+                </foreach>
+            </trim>
+
+        </trim>
+        where code in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.code,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+</mapper>

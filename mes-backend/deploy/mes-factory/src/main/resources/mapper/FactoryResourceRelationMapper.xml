@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.aiit.mes.factory.domain.dao.mapper.IFactoryResourceRelationMapper">
+
+    <insert id="insertRelationsBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into fac_resource_relation
+        (update_username, update_time, create_username, create_time, tenant_id, after_code, pre_code)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.updateUsername},now(),#{item.createUsername},now(),#{item.tenantId},#{item.afterCode},#{item.preCode})
+        </foreach>
+    </insert>
+
+</mapper>
