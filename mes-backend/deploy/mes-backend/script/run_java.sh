@@ -1,0 +1,2 @@
+nohup java -XX:+UseG1GC -Xms256M -Xmx1G -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/mes/dump -Xloggc:/var/log/mes/gc.log -XX:+UseGCLogFileRotation -XX:GCLogFileSize=512k -XX:+PrintGCDateStamps -jar app.jar > /var/log/mes/start_service.log 2 >&1 &
+tail -f /var/log/mes/start_service.log

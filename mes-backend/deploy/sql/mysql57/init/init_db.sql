@@ -1,0 +1,16 @@
+source /opt/sql/0_init_database.sql;
+source /opt/sql/1.0_db_user.sql;
+source /opt/sql/1.1_db_fac_resource.sql;
+source /opt/sql/1.2_db_base.sql;
+source /opt/sql/1.3_db_craft.sql;
+source /opt/sql/1.4_db_resource_group.sql;
+source /opt/sql/1.5_db_wms_warehouse.sql;
+source /opt/sql/1.6_db_produce.sql;
+source /opt/sql/1.7_db_order.sql;
+source /opt/sql/1.8_db_file.sql;
+source /opt/sql/sys_perm.sql;
+source /opt/sql/1.9_db_flow_instance.sql;
+source /opt/sql/0.1_internal_tenent_config.sql;
+source /opt/sql/1.10_db_display_config.sql
+source /opt/sql/1.11_db_file_meta.sql
+source /opt/sql/1.12_db_file_content.sql

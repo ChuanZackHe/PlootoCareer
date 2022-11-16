@@ -1,0 +1,18 @@
+version: '3'
+services:
+  mysql:
+    image: mes-mysql
+    container_name: mes-mysql
+    build: ""
+    volumes:
+      - /home/aiit-mes/mysql/data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d/
+      - ./post_init:/opt/sql
+      - ./upgrade:/opt/sql/upgrade
+      - ./rollback:/opt/sql/rollback
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MES_MYSQL_PASSWORD:-Y2h5d9pDa9D}
+    ports:
+      - "${MES_MYSQL_PORT:-35008}:3306"
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

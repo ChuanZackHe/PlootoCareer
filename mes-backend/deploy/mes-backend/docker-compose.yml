@@ -1,0 +1,28 @@
+version: '2.2'
+services:
+  web:
+    container_name: mes-backend
+    expose:
+      - "9093"
+      - "9094"
+    ports:
+      - "${MES_BACKEND_PORT:-35002}:9093"
+      - "${MES_BACKEND_HTTPS_PORT:-35004}:9094"
+    build: .
+    image: mes-backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MES_MYSQL_PASSWORD:-Y2h5d9pDa9D}
+      - MES_MYSQL_PASSWORD=${MES_MYSQL_PASSWORD:-Y2h5d9pDa9D}
+      - MES_MYSQL_IP=${MES_MYSQL_IP:-127.0.0.1}
+      - MES_MYSQL_PORT=${MES_MYSQL_PORT:-35008}
+      - MES_REDIS_IP=${MES_REDIS_IP:-127.0.0.1}
+      - MES_REDIS_PORT=${MES_REDIS_PORT:-35007}
+      - PUBLIC_IP=${PUBLIC_IP:-8.130.9.128}
+    volumes:
+      - /home/aiit-mes/mes-backend/log:/var/log/mes
+      - /home/aiit-mes/file/static-file:/home/aiit-mes/file/static-file
+      - /home/aiit-mes/file/dynamic-file:/home/aiit-mes/file/dynamic-file
+      - ./xls_template:/xls_template
+      - ./script/run_java.sh:/start_service.sh
+      - ./mes-application-1.0.0-SNAPSHOT.jar:/app.jar
+    restart: always
